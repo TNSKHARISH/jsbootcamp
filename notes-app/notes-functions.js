@@ -96,20 +96,7 @@ else if(sortBy ==='alphabetical'){
 
 }
 
-// Render application
-const renderNotes=function(notes,filters){
-    notes=sortNotes(notes,filters.sortBy)
-let filteredNotes=notes.filter(function(item){
-    return item.title.toLowerCase()===filters.searchText.toLowerCase()
-})
-document.querySelector('#notes').innerHTML=''
-filteredNotes.forEach(function(item){
-    const noteEl = generateNoteDOM(item)
-    document.querySelector('#notes').appendChild(noteEl)
-})
-}
 
-/*
 // Render application notes
 const renderNotes = function (notes, filters) {
     const filteredNotes = notes.filter(function (note) {
@@ -123,7 +110,7 @@ const renderNotes = function (notes, filters) {
         document.querySelector('#notes').appendChild(noteEl)
     })
 }
-*/
+
 // Generate the last edited message
 const generateLastEdited = function (timestamp) {
     return `Last edited ${moment(timestamp).fromNow()}`
