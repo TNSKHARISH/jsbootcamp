@@ -1,0 +1,119 @@
+let todos = []
+ /*[{
+    text: 'Order cat food',
+    completed: false
+}, {
+    text: 'Clean kitchen',
+    completed: true
+}, {
+    text: 'Buy food',
+    completed: true
+}, {
+    text: 'Do work',
+    completed: false
+}, {
+    text: 'Exercise',
+    completed: true
+}]*/
+
+
+const filters = {
+    searchText: '',
+    hideCompleted: false
+}
+
+// check for existing saved data
+//localStorage.clear()
+
+const todoJSON= localStorage.getItem('todos')
+
+if(todoJSON!==null){
+todos=JSON.parse(todoJSON)
+}
+
+const renderTodos = function (todos, filters) {
+    let filteredTodos = todos.filter(function (todo) {
+        return todo.text.toLowerCase().includes(filters.searchText.toLowerCase())
+    })
+ filteredTodos =filteredTodos.filter(function(todo){
+     // return !filters.hideCompleted || !todo.completed
+    if(filters.hideCompleted===true){
+        return !todo.completed
+    }
+    else
+     return todo.text
+})
+    const incompleteTodos = filteredTodos.filter(function (todo) {
+        return !todo.completed
+    })
+
+    document.querySelector('#todos').innerHTML = ''
+
+    const summary = document.createElement('h2')
+    summary.textContent = `You have ${incompleteTodos.length} todos left`
+    document.querySelector('#todos').appendChild(summary)
+
+    filteredTodos.forEach(function (todo) {
+        const p = document.createElement('p')
+        if(todo.text.length>0)
+        p.textContent = todo.text
+        else 
+        p.textContent='Misleanious work todo'
+        document.querySelector('#todos').appendChild(p)  
+            })
+
+}
+
+renderTodos(todos, filters)
+
+/*
+
+// Listen for new todo creation
+document.querySelector('#add-todo').addEventListener('click', function (e) {
+    console.log('Add a new todo...')
+})
+
+// Listen for todo text change
+document.querySelector('#new-todo-text').addEventListener('input', function (e) {
+    console.log(e.target.value)
+})
+
+*/
+
+
+
+document.querySelector('#search-text').addEventListener('input', function (e) {
+    filters.searchText = e.target.value
+    renderTodos(todos, filters)
+})
+
+//1. Create a form with a single input for todo text
+//2.setup an submit handler and cancel the default action
+//3.Add a new Item to the todos array ( completed value of false)
+//4. render the application
+
+document.querySelector("#new-todo").addEventListener('submit',function(e){
+    e.preventDefault()
+    todos.push({
+        text : e.target.elements.text.value,
+        completed: false
+    })
+    localStorage.setItem('todos',JSON.stringify(todos))
+    //console.log(todos)
+    renderTodos(todos,filters)
+    e.target.elements.text.value=''
+})
+
+//1. create a checkbox and setup event listener-> "Hide completed"
+//2. create new hidecompleted filter(default false)
+//3. update hide completed and rerender list on checkbox change
+//4. Setup renderTodos to remove completed items
+
+document.querySelector("#show-completed").addEventListener('change',function(e){
+ 
+    filters.hideCompleted = e.target.checked
+   // e.target.checked=false
+
+    renderTodos(todos,filters)
+
+})
